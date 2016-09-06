@@ -14,14 +14,22 @@
 %
 % Created by Murty V P S Dinavahi (MD) 01-12-2015
 %
-function createMontageEEG(capType)
+function createMontageEEG(capType,M1_XYZFilepath)
 
-folderMontage = fullfile(pwd,'Montages');
+% Initialise
+folderMontage = fullfile(pwd,'Montages','Layouts',capType);
 load(fullfile(folderMontage,[capType 'Labels.mat']));
-load(fullfile(folderMontage,'M1_XYZ.mat'));
+if nargin<2
+    M1_XYZFilepath = fullfile(pwd,'Montages');
+end
+M1 = load(fullfile(M1_XYZFilepath,'M1_XYZ.mat'));
+M1_XYZ = M1.M1_XYZ;
 
+% Calculate chanlocs
+montageLabels = sortrows(montageLabels,1); %#ok<NODEF>
+chanlocs = zeros(size(montageLabels,1),5);
 for i = 1:size(montageLabels,1)
-    elecIndex{i} = find(strcmp(montageLabels(i,2),M1_XYZ(:,1)));
+    elecIndex{i} = find(strcmp(montageLabels(i,2),M1_XYZ(:,1))); %#ok<AGROW>
     
     if ~isempty(elecIndex{i})
         chanlocs(i,1) = i;
@@ -40,11 +48,18 @@ for i = 1:size(montageLabels,1)
     end
 end
 
+% M1_XYZ.mat file has been taken from Easycap's website and converted to
+% .mat file in MATLAB. I guess chanloc positions are already transposed to 
+% suit EEGLAB's cordinates, hence no further transposition required 
+% (unlike that used for createBipolarMontageEEG.m).
+%
+% Save
 save(fullfile(folderMontage,[capType '.xyz']),'chanlocs','-ASCII');
 filename = fullfile(folderMontage,[capType '.xyz']);
 clear chanlocs
 chanlocs = readlocs( filename, 'importmode', 'native');
 topoplot([],chanlocs,'style','blank','electrodes','numbers');
 save(fullfile(folderMontage,[capType '.mat']),'chanlocs');
+
 end
 
