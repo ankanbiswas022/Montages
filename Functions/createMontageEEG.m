@@ -22,8 +22,17 @@ load(fullfile(folderMontage,[capType 'Labels.mat']));
 if nargin<2
     M1_XYZFilepath = fullfile(pwd,'Montages');
 end
-M1 = load(fullfile(M1_XYZFilepath,'M1_XYZ.mat'));
-M1_XYZ = M1.M1_XYZ;
+
+if contains(capType,'2019')
+    % condition for new acticap 2019
+    M1 = load(fullfile(M1_XYZFilepath,'M1XYZactiCap2019.mat'));
+    M1_XYZ = M1.M1XYZactiCap2019;
+else
+    M1 = load(fullfile(M1_XYZFilepath,'M1_XYZ.mat'));
+    M1_XYZ = M1.M1_XYZ;
+end
+
+
 
 % Calculate chanlocs
 montageLabels = sortrows(montageLabels,1); %#ok<NODEF>
