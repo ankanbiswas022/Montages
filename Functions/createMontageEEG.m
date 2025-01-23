@@ -23,16 +23,14 @@ if nargin<2
     M1_XYZFilepath = fullfile(pwd,'Montages');
 end
 
-if contains(capType,'2019')
-    % condition for new acticap 2019
-    M1 = load(fullfile(M1_XYZFilepath,'M1XYZactiCap2019.mat'));
-    M1_XYZ = M1.M1XYZactiCap2019;
+if contains(capType,'UOL')
+    % condition for new cap called 'acticap64_UOL'
+    M1 = load(fullfile(M1_XYZFilepath,'M1_XYZ_actiCap64_UOL.mat'));
 else
     M1 = load(fullfile(M1_XYZFilepath,'M1_XYZ.mat'));
-    M1_XYZ = M1.M1_XYZ;
 end
 
-
+M1_XYZ = M1.M1_XYZ;
 
 % Calculate chanlocs
 montageLabels = sortrows(montageLabels,1); %#ok<NODEF>
@@ -66,7 +64,7 @@ end
 save(fullfile(folderMontage,[capType '.xyz']),'chanlocs','-ASCII');
 filename = fullfile(folderMontage,[capType '.xyz']);
 clear chanlocs
-chanlocs = readlocs( filename, 'importmode', 'native');
+chanlocs = readlocs(filename, 'importmode', 'native');
 topoplot([],chanlocs,'style','blank','electrodes','numbers');
 save(fullfile(folderMontage,[capType '.mat']),'chanlocs');
 
